@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <title>Quotes Website</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="inner">
+        <div class="box">
+          <p class="number">
+            <i class="fab fa-twitter" id="tweetme"></i>
+          </p>
+        </div>
+        <div class="text">
+          <i class="start-quote fas fa-quote-left"></i>
+          <p id="qoutes" class="qoutes"></p>
+          <p id="author" class="author"></p>
+        </div>
+      </div>
+      <button class="button">
+        <p class="newQ" onclick="getNewQuotes()">New Quotes</p>
+      </button>
+    </div>
+    <script>
+      const quotes = document.getElementById("qoutes");
+      const author = document.getElementById("author");
+      const tweetMe = document.getElementById("tweetme");
+      let realData = "";
+      let quotesTxt = "",
+        quotesAuthor = "";
+
+      const tweetNow = () => {
+        let tweetUrl = `https://twitter.com/intent/tweet?text=${quotesTxt} ${quotesAuthor}`;
+        window.open(tweetUrl);
+      };
+      const getNewQuotes = () => {
+        let random = Math.floor(Math.random() * 1000);
+        quotesTxt = realData[random].text;
+        quotesAuthor = realData[random].author;
+        quotes.innerHTML = quotesTxt;
+        console.log(quotesAuthor);
+        console.log(isEmpty(quotesAuthor));
+        author.innerHTML = !isEmpty(quotesAuthor)
+          ? " " + quotesAuthor
+          : " Unknown";
+      };
+      const getQuotes = async () => {
+        const api = "https://type.fit/api/quotes";
+        try {
+          let data = await fetch(api);
+          realData = await data.json();
+          getNewQuotes();
+        } catch (error) {}
+      };
+      function isEmpty(str) {
+        return !str || str.length === 0;
+      }
+      getQuotes();
+      tweetMe.addEventListener("click", tweetNow);
+    </script>
+  </body>
+</html>
